@@ -1,0 +1,79 @@
+﻿@model IEnumerable<Todoer.Models.DbModels.Task>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<p>
+
+    @*<button> </button><a asp-action="Create">Create New</a>*@
+</p>
+<table class="table">
+    <thead>
+        @*<tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CreatedAt)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Done)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Deadline)
+            </th>
+            <th></th>
+        </tr>*@
+    </thead>
+    <tbody>
+        <div class="container" style="display: flex; flex-direction: row; flex-wrap: wrap;">
+            @foreach (var item in Model.Reverse())
+            {
+                @*<tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CreatedAt)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Done)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Deadline)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>*@
+                <div class="card text-white bg-primary mb-3" style="width: 15em">
+                    @*<img class="card-img-top" src="..." alt="Card image cap">*@
+                    <div class="card-header text-center">@item.Title</div>
+                    <div class="card-body">
+                        <h5 class="card-title">@item.Deadline</h5>
+                        <p class="card-text">@item.Description</p>
+                        <div class="text-center">
+                            <hr />
+                            <a class="text-white" asp-action="Edit" asp-route-id="@item.Id"> Edit </a>
+                            <a class="text-white" asp-action="Details" asp-route-id="@item.Id"> Details </a>
+                            <a class="text-white" asp-action="Delete" asp-route-id="@item.Id"> Done </a>
+
+                        </div>
+                          
+                    </div>
+                </div>
+            }
+            <a asp-action="Create"><i class="fas fa-plus-circle"></i></a>
+
+        </div>
+</tbody>
+</table>

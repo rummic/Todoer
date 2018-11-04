@@ -35,3 +35,22 @@ body {
         display: none;
     }
 }
+.fa-plus-circle {
+    font-size: 8em;
+    color: green;
+    margin-top: 0.35em;
+    margin-left: 0.5em;
+}
+
+#plusButton {
+    background: transparent;
+    /*border: none;*/
+    border-radius: 5em;
+}
+.card {
+    margin: 0.5em;
+}
+
+.text-center a {
+    margin: 0.5em;
+ }
