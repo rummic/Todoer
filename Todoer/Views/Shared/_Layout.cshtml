@@ -18,34 +18,25 @@
     </environment>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container">
-            @*<div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">Todoer</a>
-            </div>*@
-            <div class="collapse navbar-collapse" id="navbarColor01">
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Tasks" asp-action="Index">Home</a></li>
-                    @*<li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>*@
-                </ul>
-                <partial name="_LoginPartial" />
-            </div>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="">Todoer</a>
+    <div class="container">
+        <div class="collapse navbar-collapse" id="navbarColor02">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" asp-area="" asp-controller="Tasks" asp-action="Index">Dashboard</a>
+                </li>
+                @*<li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>*@
+            </ul>
+            <partial name="_LoginPartial" />
         </div>
-    </nav>
+    </div>
+</nav>
 
     <partial name="_CookieConsentPartial" />
 
     <div class="container body-content">
         @RenderBody()
-        @*<footer>
-            <p>&copy; 2018 - Todoer</p>
-        </footer>*@
     </div>
 
     <environment include="Development">

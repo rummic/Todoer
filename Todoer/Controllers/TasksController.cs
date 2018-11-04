@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -14,16 +16,18 @@ namespace Todoer.Controllers
     public class TasksController : Controller
     {
         private readonly ApplicationDbContext _context;
-
-        public TasksController(ApplicationDbContext context)
+        private readonly UserManager<IdentityUser> _userManager;
+        public TasksController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Tasks
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Tasks.ToListAsync());
+            var result = await _context.Tasks.ToListAsync();
+            return View(result.Where(x => x.ApplicationUserId == _userManager.GetUserId(User).ToString()));
         }
 
         // GET: Tasks/Details/5
@@ -54,11 +58,14 @@ namespace Todoer.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Description,CreatedAt,Done,Deadline")] Task task)
+        public async Task<IActionResult> Create([Bind("Id,Title,Description,Deadline,Priority")] Task task)
         {
             if (ModelState.IsValid)
             {
+                task.CreatedAt = DateTime.Now;
+                task.ApplicationUserId = _userManager.GetUserId(User);
                 _context.Add(task);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
