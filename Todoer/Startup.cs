@@ -14,6 +14,8 @@ using Todoer.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Todoer.Models.DbModels;
+using Todoer.Services;
+using Todoer.Services.Interfaces;
 
 namespace Todoer
 {
@@ -43,6 +45,7 @@ namespace Todoer
                 .AddEntityFrameworkStores<ApplicationDbContext>();
            // services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
 
+            services.AddSingleton<IPriorityConverterService, PriorityConverterService>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 

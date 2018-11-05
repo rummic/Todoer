@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Todoer.Data;
 using Todoer.Models.DbModels;
+using Todoer.Models.DtoModels;
+using Todoer.Services.Interfaces;
 using Task = Todoer.Models.DbModels.Task;
 
 namespace Todoer.Controllers
@@ -17,17 +19,34 @@ namespace Todoer.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
-        public TasksController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
+        private readonly IPriorityConverterService _priorityConverterService;
+        public TasksController(ApplicationDbContext context, UserManager<IdentityUser> userManager, IPriorityConverterService priorityConverterService)
         {
             _context = context;
             _userManager = userManager;
+            _priorityConverterService = priorityConverterService;
         }
 
         // GET: Tasks
         public async Task<IActionResult> Index()
         {
-            var result = await _context.Tasks.ToListAsync();
-            return View(result.Where(x => x.ApplicationUserId == _userManager.GetUserId(User).ToString()));
+            var dbTasks = await _context.Tasks.ToListAsync();
+            var userDbTasks = dbTasks.Where(x => x.ApplicationUserId == _userManager.GetUserId(User) && x.Done == false);
+            List<IndexTaskDto> result = new List<IndexTaskDto>();
+            foreach (var userDbTask in userDbTasks)
+            {
+                var he = _priorityConverterService.EnumToString(userDbTask.Priority);
+                    result.Add(new IndexTaskDto
+                {
+                    DeadlineDate = userDbTask.Deadline.ToString("dd-MM-yyyy"),
+                    DeadlineTime = userDbTask.Deadline.ToString("HH:mm"),
+                    Description = userDbTask.Description,
+                    Priority = _priorityConverterService.EnumToString(userDbTask.Priority),
+                    Title = userDbTask.Title,
+                    Id = userDbTask.Id
+                });
+            }
+            return View(result);
         }
 
         // GET: Tasks/Details/5
@@ -148,7 +167,8 @@ namespace Todoer.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var task = await _context.Tasks.FindAsync(id);
-            _context.Tasks.Remove(task);
+            task.Done = true;
+            _context.Tasks.Update(task);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
