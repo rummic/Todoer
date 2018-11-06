@@ -1,15 +1,12 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using Todoer.Data;
-using Todoer.Enums;
-using Todoer.Models.DbModels;
 using Todoer.Models.DtoModels;
 using Todoer.Services.Interfaces;
 using Task = Todoer.Models.DbModels.Task;
@@ -29,40 +26,14 @@ namespace Todoer.Controllers
         }
 
         // GET: Tasks
-        public async Task<IActionResult> Index(string sortProp, string sortOrder)
+        public async Task<IActionResult> Index()
         {
             
             var dbTasks = await _context.Tasks.ToListAsync();
             var userDbTasks = dbTasks.Where(x => x.ApplicationUserId == _userManager.GetUserId(User) && x.Done == false);
-
-            switch (sortProp+sortOrder)
-            {
-                case "TitleDesc":
-                    userDbTasks = userDbTasks.OrderByDescending(s => s.Title);
-                    break;
-                case "TitleAsc":
-                    userDbTasks = userDbTasks.OrderBy(s => s.Title);
-                    break;
-                case "PriorityAsc":
-                    userDbTasks = userDbTasks.OrderBy(s => s.Priority);
-                    break;
-                case "PriorityDesc":
-                    userDbTasks = userDbTasks.OrderByDescending(s => s.Priority);
-                    break;
-                case "DeadlineAsc":
-                    userDbTasks = userDbTasks.OrderBy(s => s.Deadline);
-                    break;
-                case "DeadlineDesc":
-                    userDbTasks = userDbTasks.OrderByDescending(s => s.Deadline);
-                    break;
-                default:
-                    userDbTasks = userDbTasks.OrderByDescending(x => x.Priority).ThenByDescending(x => x.Deadline).ToList();
-                    break;
-            }
             List<IndexTaskDto> result = new List<IndexTaskDto>();
             foreach (var userDbTask in userDbTasks)
             {
-                var he = _priorityConverterService.EnumToString(userDbTask.Priority);
                     result.Add(new IndexTaskDto
                 {
                     DeadlineDate = userDbTask.Deadline.ToString("dd-MM-yyyy"),
@@ -110,6 +81,11 @@ namespace Todoer.Controllers
         {
             if (ModelState.IsValid)
             {
+                var now = DateTime.Now;
+                if (givenTask.DeadlineDate + givenTask.DeadlineTime < now)
+                {
+                    return View();
+                }
                 var task = new Task
                 {
                     CreatedAt = DateTime.Now,
@@ -166,6 +142,10 @@ namespace Todoer.Controllers
 
             if (ModelState.IsValid)
             {
+                if (task.DeadlineDate + task.DeadlineTime < DateTime.Now)
+                {
+                    return View();
+                }
                 try
                 {
                     taskFromDb.Priority = task.Priority;

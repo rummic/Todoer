@@ -4,10 +4,8 @@
     ViewData["Title"] = "Details";
 }
 
-<h2>Details</h2>
-
-<div>
-    <h4>Task</h4>
+<div style="overflow-wrap: break-word">
+    <h4 style="padding-top: 1em">Task details</h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>
@@ -23,10 +21,16 @@
             @Html.DisplayFor(model => model.Description)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.CreatedAt)
+            @Html.DisplayNameFor(model => model.Priority)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.CreatedAt)
+            @Html.DisplayFor(model => model.Priority)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Deadline)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Deadline)
         </dd>
         <dt>
             @Html.DisplayNameFor(model => model.Done)
@@ -35,10 +39,10 @@
             @Html.DisplayFor(model => model.Done)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.Deadline)
+            @Html.DisplayNameFor(model => model.CreatedAt)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Deadline)
+            @Html.DisplayFor(model => model.CreatedAt)
         </dd>
     </dl>
 </div>

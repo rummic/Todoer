@@ -26,18 +26,18 @@
                     <span asp-validation-for="Description" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label asp-for="DeadlineDate" class="control-label"></label>
+                    <label asp-for="DeadlineDate" class="control-label">Deadline Date</label>
                     <input asp-for="DeadlineDate" type="date" class="form-control" />
                     <span asp-validation-for="DeadlineDate" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label asp-for="DeadlineTime" class="control-label"></label>
+                    <label asp-for="DeadlineTime" class="control-label">Deadline Time</label>
                     <input asp-for="DeadlineTime" type="time" class="form-control" />
                     <span asp-validation-for="DeadlineTime" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label asp-for="Priority" class="control-label"></label>
-                    <select class="form-control" asp-for="@Model.Priority" asp-items="Html.GetEnumSelectList<Priority>()"></select>
+                    <select class="form-control" asp-for="@Model.Priority" asp-items="@Html.GetEnumSelectList<Priority>()"></select>
                 </div>
                 <div class="form-group">
                     <input type="submit" value="Create" class="btn btn-default" />

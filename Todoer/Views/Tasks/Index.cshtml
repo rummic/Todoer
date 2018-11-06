@@ -11,41 +11,6 @@
         <thead>
         </thead>
         <tbody>
-            <form asp-action="Index">
-                <div class="container" style="display: flex; flex-direction: row; flex-wrap: wrap">
-                    <h5>Sort settings:</h5>
-                    <div class="container-fluid form-group" style="flex: 0">
-                        <div class="custom-control custom-radio">
-                            <input type="radio" id="PriorityRadio" name="prop" value="Priority" class="custom-control-input" checked="">
-                            <label class="custom-control-label" for="PriorityRadio">Priority</label>
-                        </div>
-                        <div class="custom-control custom-radio">
-                            <input type="radio" id="DeadlineRadio" name="prop" value="Deadline" class="custom-control-input">
-                            <label class="custom-control-label" for="DeadlineRadio">Deadline</label>
-                        </div>
-                        <div class="custom-control custom-radio">
-                            <input type="radio" id="TitleRadio" name="prop" value="Title" class="custom-control-input">
-                            <label class="custom-control-label" for="TitleRadio">Title</label>
-                            @Html.ActionLink("Title", "Index", new { sortOrder = "TitleAsc" })
-                        </div>
-                    </div>
-                    <div class="container-fluid form-group" style="flex: 1; max-width: 9em;">
-                        <div class="custom-control custom-radio">
-                            <input type="radio" value="Asc" name="order" class="custom-control-input" checked="">
-                            <label class="custom-control-label">Ascending</label>
-                        </div>
-                        <div class="custom-control custom-radio">
-                            <input type="radio" value="Desc" name="order" class="custom-control-input">
-                            <label class="custom-control-label">Descending</label>
-                        </div>
-                    </div>
-                    <div style="flex: 2; padding-top: 1em">
-                        <input type="submit" value="Sort" class="btn btn-default bg-primary" />
-                    </div>
-                </div>
-            </form>
-        
-
 
         <div class="container" style="display: flex; flex-direction: row; flex-wrap: wrap;">
             @foreach (var item in Model.Reverse())
@@ -76,5 +41,8 @@
 }
 else
 {
-    <h4>Register new account or login.</h4>
+    <div style="padding: 2em">
+        <h4>Welcome to Todoer web application.</h4>
+        <p>Use links in right upper corner to register new account or to login into existing one.</p>
+    </div>
 }
