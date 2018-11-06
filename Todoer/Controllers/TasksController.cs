@@ -29,10 +29,36 @@ namespace Todoer.Controllers
         }
 
         // GET: Tasks
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortProp, string sortOrder)
         {
+            
             var dbTasks = await _context.Tasks.ToListAsync();
-            var userDbTasks = dbTasks.Where(x => x.ApplicationUserId == _userManager.GetUserId(User) && x.Done == false).OrderByDescending(x => x.Priority).ThenByDescending(x => x.Deadline);
+            var userDbTasks = dbTasks.Where(x => x.ApplicationUserId == _userManager.GetUserId(User) && x.Done == false);
+
+            switch (sortProp+sortOrder)
+            {
+                case "TitleDesc":
+                    userDbTasks = userDbTasks.OrderByDescending(s => s.Title);
+                    break;
+                case "TitleAsc":
+                    userDbTasks = userDbTasks.OrderBy(s => s.Title);
+                    break;
+                case "PriorityAsc":
+                    userDbTasks = userDbTasks.OrderBy(s => s.Priority);
+                    break;
+                case "PriorityDesc":
+                    userDbTasks = userDbTasks.OrderByDescending(s => s.Priority);
+                    break;
+                case "DeadlineAsc":
+                    userDbTasks = userDbTasks.OrderBy(s => s.Deadline);
+                    break;
+                case "DeadlineDesc":
+                    userDbTasks = userDbTasks.OrderByDescending(s => s.Deadline);
+                    break;
+                default:
+                    userDbTasks = userDbTasks.OrderByDescending(x => x.Priority).ThenByDescending(x => x.Deadline).ToList();
+                    break;
+            }
             List<IndexTaskDto> result = new List<IndexTaskDto>();
             foreach (var userDbTask in userDbTasks)
             {
