@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Todoer.Data;
+using Todoer.Enums;
 using Todoer.Models.DbModels;
 using Todoer.Models.DtoModels;
 using Todoer.Services.Interfaces;
@@ -31,7 +32,7 @@ namespace Todoer.Controllers
         public async Task<IActionResult> Index()
         {
             var dbTasks = await _context.Tasks.ToListAsync();
-            var userDbTasks = dbTasks.Where(x => x.ApplicationUserId == _userManager.GetUserId(User) && x.Done == false);
+            var userDbTasks = dbTasks.Where(x => x.ApplicationUserId == _userManager.GetUserId(User) && x.Done == false).OrderByDescending(x => x.Priority).ThenByDescending(x => x.Deadline);
             List<IndexTaskDto> result = new List<IndexTaskDto>();
             foreach (var userDbTask in userDbTasks)
             {
@@ -79,17 +80,24 @@ namespace Todoer.Controllers
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Description,Deadline,Priority")] Task task)
+        public async Task<IActionResult> Create([Bind("Id,Title,Description,DeadlineDate,DeadlineTime,Priority")] CreateTaskDto givenTask)
         {
             if (ModelState.IsValid)
             {
-                task.CreatedAt = DateTime.Now;
-                task.ApplicationUserId = _userManager.GetUserId(User);
+                var task = new Task
+                {
+                    CreatedAt = DateTime.Now,
+                    ApplicationUserId = _userManager.GetUserId(User),
+                    Deadline = givenTask.DeadlineDate.Date + givenTask.DeadlineTime,
+                    Priority = givenTask.Priority,
+                    Description = givenTask.Description,
+                    Title = givenTask.Title,
+                };
                 _context.Add(task);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(task);
+            return View();
         }
 
         // GET: Tasks/Edit/5
@@ -105,7 +113,16 @@ namespace Todoer.Controllers
             {
                 return NotFound();
             }
-            return View(task);
+
+            var taskDto = new CreateTaskDto
+            {
+                Priority = task.Priority,
+                DeadlineDate = task.Deadline.Date,
+                DeadlineTime = task.Deadline.TimeOfDay,
+                Description = task.Description,
+                Title = task.Title
+            };
+            return View(taskDto);
         }
 
         // POST: Tasks/Edit/5
@@ -113,9 +130,10 @@ namespace Todoer.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,CreatedAt,Done,Deadline")] Task task)
+        public async Task<IActionResult> Edit(int id, [Bind("Title,Description,DeadlineDate,DeadlineTime,Priority")] CreateTaskDto task)
         {
-            if (id != task.Id)
+            var taskFromDb = _context.Tasks.FirstOrDefault(x => x.Id == id);
+            if (taskFromDb == null)
             {
                 return NotFound();
             }
@@ -124,12 +142,16 @@ namespace Todoer.Controllers
             {
                 try
                 {
-                    _context.Update(task);
+                    taskFromDb.Priority = task.Priority;
+                    taskFromDb.Deadline = task.DeadlineDate + task.DeadlineTime;
+                    taskFromDb.Description = task.Description;
+                    taskFromDb.Title = task.Title;
+                    _context.Update(taskFromDb);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!TaskExists(task.Id))
+                    if (!TaskExists(id))
                     {
                         return NotFound();
                     }

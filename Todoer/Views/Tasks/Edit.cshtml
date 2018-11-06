@@ -1,18 +1,16 @@
-﻿@model Todoer.Models.DbModels.Task
+﻿@using Todoer.Enums
+@model Todoer.Models.DtoModels.CreateTaskDto
 
 @{
     ViewData["Title"] = "Edit";
 }
-
-<h2>Edit</h2>
-
-<h4>Task</h4>
+<br/>
+<h4>Edit the Task</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
             <div class="form-group">
                 <label asp-for="Title" class="control-label"></label>
                 <input asp-for="Title" class="form-control" />
@@ -20,25 +18,22 @@
             </div>
             <div class="form-group">
                 <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
+                <textarea asp-for="Description" class="form-control" maxlength="250" rows="2"></textarea>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="CreatedAt" class="control-label"></label>
-                <input asp-for="CreatedAt" class="form-control" />
-                <span asp-validation-for="CreatedAt" class="text-danger"></span>
+                <label asp-for="DeadlineDate" class="control-label">Deadline Date</label>
+                <input asp-for="DeadlineDate" type="date" class="form-control" />
+                <span asp-validation-for="DeadlineDate" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <div class="checkbox">
-                    <label>
-                        <input asp-for="Done" /> @Html.DisplayNameFor(model => model.Done)
-                    </label>
-                </div>
+                <label asp-for="DeadlineTime" class="control-label">Deadline Time</label>
+                <input asp-for="DeadlineTime" type="time" class="form-control" />
+                <span asp-validation-for="DeadlineTime" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Deadline" class="control-label"></label>
-                <input asp-for="Deadline" class="form-control" />
-                <span asp-validation-for="Deadline" class="text-danger"></span>
+                <label asp-for="Priority" class="control-label"></label>
+                <select class="form-control" asp-for="@Model.Priority" asp-items="Html.GetEnumSelectList<Priority>()"></select>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-default" />

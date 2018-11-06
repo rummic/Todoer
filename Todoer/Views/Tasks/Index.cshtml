@@ -1,40 +1,40 @@
 ﻿@model IEnumerable<Todoer.Models.DtoModels.IndexTaskDto>
 
- 
+
 
 @{
     ViewData["Title"] = "Index";
-    }
+}
 @if (User.Identity.IsAuthenticated)
 {
     <table class="table">
         <thead>
         </thead>
         <tbody>
-        <div class="container" style="display: flex; flex-direction: row; flex-wrap: wrap;">
-            @foreach (var item in Model.Reverse())
-            {
-                <div class="@item.Priority" style="width: 15em">
-                    @*<img class="card-img-top" src="..." alt="Card image cap">*@
-                    <div class="card-header text-center">@item.Title</div>
-                    <div class="card-body">
-                        <h5 class="card-title">@item.DeadlineDate</h5>
-                        <h5 class="card-title">@item.DeadlineTime</h5>
-                        <p class="card-text">@item.Description</p>
-                        <div class="text-center">
-                            <hr />
-                            <a class="text-white" asp-action="Edit" asp-route-id="@item.Id"> Edit </a>
-                            <a class="text-white" asp-action="Details" asp-route-id="@item.Id"> Details </a>
-                            <a class="text-white" asp-action="Delete" asp-route-id="@item.Id"> Done </a>
+            <div class="container" style="display: flex; flex-direction: row; flex-wrap: wrap;">
+                @foreach (var item in Model.Reverse())
+                {
+                    <div class="@item.Priority" style="width: 15em">
+                        @*<img class="card-img-top" src="..." alt="Card image cap">*@
+                        <div class="card-header text-center">@item.Title</div>
+                        <div class="card-body">
+                            <h6 class="card-title text-center">@item.DeadlineDate</h6>
+                            <h6 class="card-title text-center">@item.DeadlineTime</h6>
+                            <p id="p-Description" class="card-text text-center">@item.Description</p>
+    <div class="text-center">
+        <hr />
+        <a class="text-white" asp-action="Edit" asp-route-id="@item.Id"> Edit </a>
+        <a class="text-white" asp-action="Details" asp-route-id="@item.Id"> Details </a>
+        <a class="text-white" asp-action="Delete" asp-route-id="@item.Id"> Done </a>
 
-                        </div>
+    </div>
 
-                    </div>
-                </div>
-            }
-            <a asp-action="Create"><i class="fas fa-plus-circle"></i></a>
+</div>
+</div>
+}
+                <a asp-action="Create"><i class="fas fa-plus-circle"></i></a>
 
-        </div>
+            </div>
         </tbody>
     </table>
 }
